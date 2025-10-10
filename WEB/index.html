@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Lab</title>
+    
+    <script defer src="index.js"></script>
+    
+    <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
+    <style>
+body {
+    font-family: serif;
+    color: #333;
+    font-size: 16px;
+    background-color: #f7f9fc;
+    margin: 0;
+    padding: 20px;
+}
+
+#info {
+    font-family: serif;
+    color: black;
+    font-size: 18px;
+    text-align: center;
+}
+
+
+#info::before {
+    content: "🎓 ";
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+form {
+    font-family: inherit;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+form > label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select, input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #3498db;
+    font-family: serif;
+}
+
+select {
+    border-color: #9b59b6;
+}
+
+
+button[type="button"] {
+    padding: 8px 12px;
+    margin: 0 5px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+button[type="submit"]:focus {
+    outline: 2px solid #e74c3c;
+}
+
+input[type="number"]:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.2);
+    outline: none;
+}
+
+canvas {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f8f9fa;
+    display: block;
+    margin: 0 auto 20px;
+}
+
+#result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-family: serif;
+}
+
+#result-table th {
+    background-color: #000;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+#result-table td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    color: #555;
+}
+
+#error {
+    color: #e74c3c;
+    background: #fadbd8;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+}
+    </style>
+</head>
+<body>
+<table width="100%">
+    <tr>
+        <td width="30%" valign="top">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <div id="info">
+                            Чупров Иван
+                            <br/>
+                            P3214
+                            <br/>
+                            v. 468030
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form action="/" method="GET" id="data-form">
+                            <label for="x">Select X:</label>
+                            <select id="x" name="x" required>
+                                <option value="">-- Choose X --</option>
+                                <option value="-3">-3</option>
+                                <option value="-2">-2</option>
+                                <option value="-1">-1</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <br><br>
+                            <label for="y">Enter Y:</label>
+                            <input type="number" id="y" name="y" required>
+                            <br><br>
+                            <fieldset id="rs">
+                                <legend>Select R:</legend>
+                                <button type="button" name="r" value="1.0">1.0</button>
+                                <button type="button" name="r" value="1.5">1.5</button>
+                                <button type="button" name="r" value="2.0">2.0</button>
+                                <button type="button" name="r" value="2.5">2.5</button>
+                                <button type="button" name="r" value="3.0">3.0</button>
+                            </fieldset>
+                            <br>
+                            <input type="hidden" name="r" id="r-value" required>
+
+                           
+                            <div id="recaptcha-container" style="margin: 10px 0;"></div>
+
+                            <button type="submit">Submit</button>
+                        </form>
+                        <div id="error" hidden></div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="70%" valign="top">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <canvas id="graph" width="300" height="300"></canvas>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table id="result-table" width="100%">
+                            <tr>
+                                <th>X</th>
+                                <th>Y</th>
+                                <th>R</th>
+                                <th>Time</th>
+                                <th>Execution Time</th>
+                                <th>Result</th>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
