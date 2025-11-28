@@ -1,0 +1,8 @@
+ru/itmo/lab3/model/HitResult.class
+ru/itmo/lab3/beans/ResultsBean.class
+ru/itmo/lab3/beans/PlotBean$PlotData.class
+ru/itmo/lab3/beans/PlotBean.class
+ru/itmo/lab3/beans/PlotBean$PointData.class
+ru/itmo/lab3/model/ResultLazyModel.class
+ru/itmo/lab3/converter/BigDecimalConverter.class
+ru/itmo/lab3/beans/PlotBean$SelectableX.class
