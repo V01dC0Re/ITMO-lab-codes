@@ -1,14 +1,14 @@
-package com.example.app.rest;
+package rest;
 
-import com.example.app.ejb.AuthServiceBean;
-import com.example.app.entity.User;
+import ejb.AuthServiceBean;
+import entity.User;
 
-import javax.ejb.EJB;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ejb.EJB;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/api/auth")
 public class AuthResource {

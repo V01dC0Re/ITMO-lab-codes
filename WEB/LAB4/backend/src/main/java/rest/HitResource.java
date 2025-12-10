@@ -1,15 +1,15 @@
-package com.example.app.rest;
+package rest;
 
-import com.example.app.ejb.HitServiceBean;
-import com.example.app.entity.HitResult;
-import com.example.app.entity.User;
+import ejb.HitServiceBean;
+import entity.HitResult;
+import entity.User;
 
-import javax.ejb.EJB;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ejb.EJB;
+import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/api/hits")

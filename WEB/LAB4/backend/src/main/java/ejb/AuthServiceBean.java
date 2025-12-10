@@ -1,12 +1,12 @@
-package com.example.app.ejb;
+package ejb;
 
-import com.example.app.entity.User;
+import entity.User;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 @Stateless
 public class AuthServiceBean {

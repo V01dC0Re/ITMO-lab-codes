@@ -15,9 +15,16 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    @Column(name = "full_name")
+    private String fullName;
+
+    @Column(name = "group_name")
     private String groupName;
+
+    @Column(name = "variant_number")
     private String variantNumber;
 
+    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -40,6 +47,14 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getGroupName() {

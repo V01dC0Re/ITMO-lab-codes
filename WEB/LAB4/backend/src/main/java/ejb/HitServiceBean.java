@@ -1,11 +1,11 @@
-package com.example.app.ejb;
+package ejb;
 
-import com.example.app.entity.HitResult;
-import com.example.app.entity.User;
+import entity.HitResult;
+import entity.User;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 

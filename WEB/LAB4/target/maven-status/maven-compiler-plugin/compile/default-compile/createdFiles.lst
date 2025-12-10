@@ -1,0 +1,6 @@
+ejb/HitServiceBean.class
+ejb/AuthServiceBean.class
+entity/HitResult.class
+rest/HitResource.class
+entity/User.class
+rest/AuthResource.class

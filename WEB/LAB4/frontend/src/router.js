@@ -17,10 +17,11 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory('./'),
+  history: createWebHistory('/lab-app/'), // Критически важно для подкаталога!
   routes
 })
 
+// Защита маршрутов
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   if (to.meta.requiresAuth && !token) {
