@@ -1,0 +1,359 @@
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+
+EPS = 1e-6
+DELTA = 1e-7
+MAX_ITER = 1000
+
+
+def f(x):
+    """
+    Исходная функция:
+    f(x) = 0.510 * e^(-0.1x) * sin(4x) * cos(x/2)
+    """
+    return 0.510 * math.exp(-0.1 * x) * math.sin(4 * x) * math.cos(x / 2)
+
+
+def df(x):
+    """
+    Первая производная f'(x).
+    Используется правило произведения для трёх функций:
+    (uvw)' = u'vw + uv'w + uvw'
+
+    u = e^(-0.1x),  u' = -0.1 * e^(-0.1x)
+    v = sin(4x),    v' = 4 * cos(4x)
+    w = cos(x/2),   w' = -0.5 * sin(x/2)
+
+    f'(x) = 0.510 * e^(-0.1x) * [
+        -0.1*sin(4x)*cos(x/2) +
+        4*cos(4x)*cos(x/2) -
+        0.5*sin(4x)*sin(x/2)
+    ]
+    """
+    exp_term = math.exp(-0.1 * x)
+    sin_4x = math.sin(4 * x)
+    cos_4x = math.cos(4 * x)
+    sin_x2 = math.sin(x / 2)
+    cos_x2 = math.cos(x / 2)
+
+    bracket = (
+            -0.1 * sin_4x * cos_x2 +
+            4 * cos_4x * cos_x2 -
+            0.5 * sin_4x * sin_x2
+    )
+    return 0.510 * exp_term * bracket
+
+
+def ddf(x):
+    """
+    Вторая производная f''(x).
+    f''(x) = 0.510 * e^(-0.1x) * [-0.1*g(x) + g'(x)]
+    где g(x) = -0.1*sin(4x)*cos(x/2) + 4*cos(4x)*cos(x/2) - 0.5*sin(4x)*sin(x/2)
+    """
+    exp_term = math.exp(-0.1 * x)
+    sin_4x = math.sin(4 * x)
+    cos_4x = math.cos(4 * x)
+    sin_x2 = math.sin(x / 2)
+    cos_x2 = math.cos(x / 2)
+
+    g = (
+            -0.1 * sin_4x * cos_x2 +
+            4 * cos_4x * cos_x2 -
+            0.5 * sin_4x * sin_x2
+    )
+
+    g_prime = (
+            -0.4 * cos_4x * cos_x2 + 0.05 * sin_4x * sin_x2 -
+            16 * sin_4x * cos_x2 - 4 * cos_4x * sin_x2 -
+            0.25 * sin_4x * cos_x2
+    )
+
+    return 0.510 * exp_term * (-0.1 * g + g_prime)
+
+
+def bisection_method(a, b):
+    """
+    Метод половинного деления (дихотомии)
+    Формулы:
+        x1 = (a + b - δ) / 2
+        x2 = (a + b + δ) / 2
+        Если f(x1) ≤ f(x2), то b = x2
+        Иначе a = x1
+    Теоретическое число итераций:
+        n ≥ log((b-a-δ)/(2ε-δ)) / log(2)
+    """
+    delta = DELTA
+    n = 0
+
+    denom = 2 * EPS - delta
+    if denom <= 0 or (b - a - delta) <= 0:
+        n_theoretical = 1
+    else:
+        n_theoretical = math.ceil(math.log((b - a - delta) / denom) / math.log(2))
+
+    while (b - a) / 2 > EPS and n < MAX_ITER:
+        n += 1
+        x1 = (a + b - delta) / 2
+        x2 = (a + b + delta) / 2
+
+        f1 = f(x1)
+        f2 = f(x2)
+
+        if f1 <= f2:
+            b = x2
+        else:
+            a = x1
+
+    x_ext = (a + b) / 2
+    return x_ext, n, n_theoretical
+
+
+def golden_section_method(a, b):
+    """
+    Метод золотого сечения
+    Формулы:
+        r = (√5 - 1) / 2 ≈ 0.618
+        x1 = a + (b-a)(1-r)
+        x2 = a + (b-a)r
+        Если f(x1) < f(x2), то b = x2
+        Иначе a = x1
+    Теоретическое число итераций:
+        n ≥ ln((b-a)/ε) / ln(1/r)
+    """
+    r = (math.sqrt(5) - 1) / 2
+
+    x1 = a + (b - a) * (1 - r)
+    x2 = a + (b - a) * r
+
+    f1 = f(x1)
+    f2 = f(x2)
+
+    n = 0
+    n_theoretical = math.ceil(math.log((b - a) / EPS) / math.log(1 / r))
+
+    while (b - a) > EPS and n < MAX_ITER:
+        n += 1
+        if f1 < f2:
+            b = x2
+            x2 = x1
+            f2 = f1
+            x1 = a + (b - a) * (1 - r)
+            f1 = f(x1)
+        else:
+            a = x1
+            x1 = x2
+            f1 = f2
+            x2 = a + (b - a) * r
+            f2 = f(x2)
+
+    x_ext = (a + b) / 2
+    return x_ext, n, n_theoretical
+
+
+def chord_method(a, b):
+    """
+    Метод хорд (секущих) для поиска экстремума
+    Формула:
+        x_{n+1} = x_n - f'(x_n) * (x_n - x_{n-1}) / (f'(x_n) - f'(x_{n-1}))
+    """
+    n = 0
+    x0 = a
+    x1 = b
+
+
+
+    while n < MAX_ITER:
+        n += 1
+        f0_prime = df(x0)
+        f1_prime = df(x1)
+
+        if abs(f1_prime - f0_prime) < EPS:
+            break
+
+        x2 = x1 - f1_prime * (x1 - x0) / (f1_prime - f0_prime)
+
+        if abs(x2 - x1) < EPS:
+            break
+
+        x0 = x1
+        x1 = x2
+
+    return x1, n
+
+
+def newton_method(x0):
+    """
+    Метод Ньютона для поиска экстремума
+    Формулы:
+        F(x) = f'(x)
+        x_{n+1} = x_n - F(x_n)/F'(x_n) = x_n - f'(x_n)/f''(x_n)
+    """
+    x = x0
+    n = 0
+
+
+
+    while n < MAX_ITER:
+        n += 1
+        f_prime = df(x)
+        f_double_prime = ddf(x)
+
+        if abs(f_double_prime) < EPS:
+            break
+
+        x_new = x - f_prime / f_double_prime
+
+        if abs(x_new - x) < EPS:
+            break
+
+        x = x_new
+
+    return x, n
+
+
+def find_extremum_intervals(left, right, step=0.1):
+    """Поиск интервалов, содержащих экстремумы (где f'(x) меняет знак)"""
+    intervals = []
+    x = left
+    while x < right:
+        if df(x) * df(x + step) < 0:
+            intervals.append((x, x + step))
+        x += step
+    return intervals
+
+
+def plot_results(left, right, extrema):
+    """Построение графика функции и экстремумов"""
+    x = np.linspace(left, right, 1000)
+    y = [f(xi) for xi in x]
+    dy = [df(xi) for xi in x]
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+
+    ax1.plot(x, y, 'b-', label='f(x)', linewidth=1.5)
+    ax1.grid(True, alpha=0.3)
+    ax1.set_ylabel('f(x)')
+    ax1.set_title('Функция и её экстремумы')
+
+    for ext in extrema:
+        marker = '^' if ext['type'] == 'Мин' else 'v'
+        color = 'green' if ext['type'] == 'Мин' else 'red'
+        ax1.plot(ext['x'], ext['value'], marker, color=color, markersize=10,
+                 label=f"{ext['type']} ({ext['x']:.4f})")
+    ax1.legend()
+
+    ax2.plot(x, dy, 'r-', label="f'(x)", linewidth=1.5)
+    ax2.axhline(0, color='gray', linestyle='--', linewidth=0.5)
+    ax2.grid(True, alpha=0.3)
+    ax2.set_xlabel('x')
+    ax2.set_ylabel("f'(x)")
+    ax2.set_title('Производная функции')
+    ax2.legend()
+
+    plt.tight_layout()
+    plt.savefig('extremum_plot.png', dpi=150)
+    plt.show()
+
+
+def main():
+    # Промежуток [0, 2] содержит ровно 2 экстремума для данной функции
+    left, right = 0, 1.3
+
+    print("=" * 100)
+    print("ПОИСК ЭКСТРЕМУМОВ ФУНКЦИИ")
+    print("f(x) = 0.510 * e^(-0.1x) * sin(4x) * cos(x/2)")
+    print(f"Промежуток: [{left}, {right}]")
+    print("=" * 100)
+
+    intervals = find_extremum_intervals(left, right)
+
+    print(f"\nНайдено интервалов с экстремумами: {len(intervals)}")
+
+    all_extrema = []
+
+    for i, (a, b) in enumerate(intervals, 1):
+        print(f"\n{'=' * 100}")
+        print(f"ЭКСТРЕМУМ #{i}")
+        print(f"{'=' * 100}")
+        print(f"Интервал поиска: [{a:.4f}, {b:.4f}]")
+
+        x_bis, n_bis, n_bis_theor = bisection_method(a, b)
+        x_gold, n_gold, n_gold_theor = golden_section_method(a, b)
+        x_chord, n_chord = chord_method(a, b)
+        x_new, n_new = newton_method((a + b) / 2)
+
+        f_bis = f(x_bis)
+        f_gold = f(x_gold)
+        f_chord = f(x_chord)
+        f_new = f(x_new)
+
+        x_avg = (x_bis + x_gold + x_chord + x_new) / 4
+        f_avg = f(x_avg)
+        f2_avg = ddf(x_avg)
+
+        ext_type = "Минимум" if f2_avg > 0 else "Максимум"
+        ext_marker = "Мин" if f2_avg > 0 else "Макс"
+
+        print(f"\n1. МЕТОД ПОЛОВИННОГО ДЕЛЕНИЯ:")
+        print(f"   Точка экстремума: x = {x_bis:.4f}")
+        print(f"   Значение функции: f(x) = {f_bis:.4f}")
+        print(f"   Фактическое число итераций: n = {n_bis}")
+        print(f"   Теоретическое число итераций: n ≥ {n_bis_theor}")
+
+        print(f"\n2. МЕТОД ЗОЛОТОГО СЕЧЕНИЯ:")
+        print(f"   Точка экстремума: x = {x_gold:.4f}")
+        print(f"   Значение функции: f(x) = {f_gold:.4f}")
+        print(f"   Фактическое число итераций: n = {n_gold}")
+        print(f"   Теоретическое число итераций: n ≥ {n_gold_theor}")
+
+        print(f"\n3. МЕТОД ХОРД:")
+        print(f"   Точка экстремума: x = {x_chord:.4f}")
+        print(f"   Значение функции: f(x) = {f_chord:.4f}")
+        print(f"   Фактическое число итераций: n = {n_chord}")
+
+        print(f"\n4. МЕТОД НЬЮТОНА:")
+        # print(f"   F(x) = f'(x)")
+        # print(f"   x_(n+1) = x_n - f'(x_n)/f''(x_n)")
+        print(f"   Точка экстремума: x = {x_new:.4f}")
+        print(f"   Значение функции: f(x) = {f_new:.4f}")
+        print(f"   Фактическое число итераций: n = {n_new}")
+
+        print(f"\n5. РЕЗУЛЬТАТЫ:")
+        print(f"   Усреднённая точка: x = {x_avg:.4f}")
+        print(f"   Значение функции: f(x) = {f_avg:.4f}")
+        print(f"   Тип экстремума: {ext_type}")
+
+        all_extrema.append({
+            'x': x_avg,
+            'value': f_avg,
+            'type': ext_marker
+        })
+
+    print(f"\n{'=' * 100}")
+    print("ИТОГОВЫЕ РЕЗУЛЬТАТЫ")
+    print(f"{'=' * 100}")
+
+    if all_extrema:
+        min_ext = min(all_extrema, key=lambda e: e['value'])
+        max_ext = max(all_extrema, key=lambda e: e['value'])
+
+        print(f"\nГлобальный минимум на [{left}, {right}]:")
+        print(f"  x = {min_ext['x']:.4f}")
+        print(f"  f(x) = {min_ext['value']:.4f}")
+
+        print(f"\nГлобальный максимум на [{left}, {right}]:")
+        print(f"  x = {max_ext['x']:.4f}")
+        print(f"  f(x) = {max_ext['value']:.4f}")
+
+        print(f"\nВсе найденные экстремумы:")
+        print(f"{'№':<3} {'x':<12} {'f(x)':<15} {'Тип'}")
+        print("-" * 45)
+        for i, ext in enumerate(all_extrema, 1):
+            print(f"{i:<3} {ext['x']:<12.4f} {ext['value']:<15.4f} {ext['type']}")
+
+    plot_results(left, right, all_extrema)
+
+
+if __name__ == "__main__":
+    main()
